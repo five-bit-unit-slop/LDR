@@ -4,6 +4,7 @@ import json
 from wifi_driver import connect_wifi, send_data
 
 ldr = ADC(Pin(26))
+draaiknop = ADC(Pin(27))
 
 def timestamp_now():
     t = utime.localtime()
@@ -22,10 +23,18 @@ while True:
             "id": "pico-001"
         },
         "action": "sensor.measurement",
-        "payload": {
-            "sensor": "light",
-            "value": ldr.read_u16(),
-            "unit": "raw"
+        "payloads": 
+        {   1: {
+                "sensor": "light",
+                "value": ldr.read_u16(),
+                "unit": "raw",
+            },
+            2: {
+                "sensor": "draaiknop",
+                "value": draaiknop.read_u16(),
+                "unit": "raw",
+            }
+
         },
         "auth": {
             "token": device_token
@@ -35,4 +44,9 @@ while True:
     response = send_data(data)
     if response is not None:
         print("Server response:", response)
-    utime.sleep(1)
+
+    value_LDR = ldr.read_u16
+    value_draaiknop = draaiknop.read_u16
+
+    
+
