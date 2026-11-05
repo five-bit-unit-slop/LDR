@@ -32,6 +32,7 @@ while True:
         }
     }
 
-    print(json.dumps(data))
-    # send_data(data)  # Uncomment if this is how your module sends the dictionary
+    response = send_data(data)
+    if response is not None:
+        print("Server response:", response)
     utime.sleep(1)
