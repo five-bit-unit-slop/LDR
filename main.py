@@ -1,31 +1,37 @@
-from machine import Pin, ADC # pyright: ignore[reportMissingImports]
-import utime # pyright: ignore[reportMissingImports]
+from machine import Pin, ADC
+import utime
 import json
-from wifi-driver import connect_wifi, send_data
+from wifi_driver import connect_wifi, send_data
 
 ldr = ADC(Pin(26))
 
-data = {
-    "version": "1.0",
-    "request_id": "uuid",
-    "timestamp": "2026-11-04T20:00:00Z",
-    "device": {
-        "id": "pico-001"
-    },
-    "action": "sensor.measurement",
-    "payload": {
-        "sensor": "light",
-        "value": 0,
-        "unit": "raw"
-    },
-    "auth": {
-        "token": "DEVICE_TOKEN"
-    }
-}
+def timestamp_now():
+    t = utime.localtime()
+    return "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}".format(
+        t[0], t[1], t[2], t[3], t[4], t[5]
+    )
+
+device_token = "YOUR_REAL_DEVICE_TOKEN"
 
 while True:
-    val = ldr.read_u16()
-    data["payload"]["value"] = val
-    print(data)
-    print(json.dumps(data, indent=4))
+    data = {
+        "version": "1.0",
+        "request_id": str(utime.ticks_ms()),
+        "timestamp": timestamp_now(),
+        "device": {
+            "id": "pico-001"
+        },
+        "action": "sensor.measurement",
+        "payload": {
+            "sensor": "light",
+            "value": ldr.read_u16(),
+            "unit": "raw"
+        },
+        "auth": {
+            "token": device_token
+        }
+    }
+
+    print(json.dumps(data))
+    # send_data(data)  # Uncomment if this is how your module sends the dictionary
     utime.sleep(1)
