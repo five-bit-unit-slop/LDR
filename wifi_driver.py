@@ -13,16 +13,17 @@ def connect_wifi(ssid, password):
     wlan.connect(ssid, password)
 
     while not wlan.isconnected():
-        time.sleep(1)
+        time.sleep(0.1)
 
     print("Connected:", wlan.ifconfig())
     return wlan
 
-_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-_udp.settimeout(3)
+
 
 def send_data(data):
-    global SERVER_IP, PORT, BUFFER_SIZE, _udp
+    global SERVER_IP, PORT, BUFFER_SIZE
+    _udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    _udp.settimeout(3)
     payload = json.dumps(data).encode("utf-8")
     _udp.sendto(payload, (SERVER_IP, PORT))
 
