@@ -12,6 +12,7 @@ def timestamp_now():
         t[0], t[1], t[2], t[3], t[4], t[5]
     )
 
+connect_wifi("ASUS_SCHOOL 5146", "5(xO3488")
 device_token = "YOUR_REAL_DEVICE_TOKEN"
 
 while True:

@@ -5,7 +5,7 @@ import json
 
 PORT = 8080
 BUFFER_SIZE = 1024
-SERVER_IP = "192.168.1.100"
+SERVER_IP = "192.168.137.1"
 
 def connect_wifi(ssid, password):
     wlan = network.WLAN(network.STA_IF)
