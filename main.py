@@ -46,8 +46,7 @@ while True:
     if response is not None:
         print("Server response:", response)
 
-    value_LDR = ldr.read_u16
-    value_draaiknop = draaiknop.read_u16
+    send_data(data)
 
     
 
