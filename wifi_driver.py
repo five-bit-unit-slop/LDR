@@ -22,11 +22,12 @@ _udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 _udp.settimeout(3)
 
 def send_data(data):
+    global SERVER_IP, PORT, BUFFER_SIZE, _udp
     payload = json.dumps(data).encode("utf-8")
     _udp.sendto(payload, (SERVER_IP, PORT))
 
     try:
-        response, address = _udp.recvfrom(BUFFER_SIZE)
+        response, SERVER_IP = _udp.recvfrom(BUFFER_SIZE)
         return response.decode("utf-8")
     except OSError:
         return None
