@@ -6,6 +6,7 @@ import json
 PORT = 8080
 BUFFER_SIZE = 1024
 SERVER_IP = "192.168.137.1"
+SENDER = None  # Global variable to store the sender address for responses
 
 def connect_wifi(ssid, password):
     wlan = network.WLAN(network.STA_IF)
@@ -19,14 +20,20 @@ def connect_wifi(ssid, password):
     return wlan
 
 def send_data(data):
-    global SERVER_IP, PORT, BUFFER_SIZE
+    global SERVER_IP, PORT, BUFFER_SIZE, SENDER
     udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     udp.settimeout(3)
-    payload = json.dumps(data).encode("utf-8")
-    udp.sendto(payload, (SERVER_IP, PORT))
 
     try:
-        response, SERVER_IP = udp.recvfrom(BUFFER_SIZE)
+        payload = json.dumps(data).encode("utf-8")
+        udp.sendto(payload, (SERVER_IP, PORT))
+        response, SENDER = udp.recvfrom(BUFFER_SIZE)
         return response.decode("utf-8")
-    except OSError:
+    
+    except OSError as e:
+        print("UDP error:", e)
         return None
+    
+    finally:
+        udp.close()
+
