@@ -1,6 +1,7 @@
 from machine import Pin, ADC # pyright: ignore[reportMissingImports]
 import utime # pyright: ignore[reportMissingImports]
 import json
+from wifi-driver import connect_wifi, send_data
 
 ldr = ADC(Pin(26))
 
