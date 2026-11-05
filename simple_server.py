@@ -1,32 +1,24 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import socket
 
-class RequestHandler(BaseHTTPRequestHandler):
+HOST = "0.0.0.0"
+PORT = 8080
+BUFFER_SIZE = 1024
 
-    def handle_request(self):
-        content_length = int(self.headers.get("Content-Length", 0))
-        body = self.rfile.read(content_length) if content_length else b""
+server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+server.bind((HOST, PORT))
 
-        print(f"\n[{self.command}] {self.path}")
-        print("Headers:", self.headers)
-        print("Body:", body.decode("utf-8", errors="replace"))
-
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.end_headers()
-        self.wfile.write(b'{"status":"received"}')
-
-    do_GET = handle_request
-    do_POST = handle_request
-    do_PUT = handle_request
-    do_PATCH = handle_request
-    do_DELETE = handle_request
-
-server = HTTPServer(("0.0.0.0", 8080), RequestHandler)
-
-print("Server listening on http://0.0.0.0:8080")
+print(f"UDP server listening on port {PORT}")
 
 try:
-    server.serve_forever()
+    while True:
+        data, address = server.recvfrom(BUFFER_SIZE)
+
+        print(f"\nRequest from {address}:")
+        print(data.decode("utf-8", errors="replace"))
+
+        server.sendto(b'{"status":"received"}', address)
+
 except KeyboardInterrupt:
     print("\nShutting down...")
-    server.server_close()
+finally:
+    server.close()
