@@ -18,17 +18,15 @@ def connect_wifi(ssid, password):
     print("Connected:", wlan.ifconfig())
     return wlan
 
-
-
 def send_data(data):
     global SERVER_IP, PORT, BUFFER_SIZE
-    _udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    _udp.settimeout(3)
+    udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udp.settimeout(3)
     payload = json.dumps(data).encode("utf-8")
-    _udp.sendto(payload, (SERVER_IP, PORT))
+    udp.sendto(payload, (SERVER_IP, PORT))
 
     try:
-        response, SERVER_IP = _udp.recvfrom(BUFFER_SIZE)
+        response, SERVER_IP = udp.recvfrom(BUFFER_SIZE)
         return response.decode("utf-8")
     except OSError:
         return None
