@@ -46,7 +46,10 @@ while True:
     if response is not None:
         print("Server response:", response)
 
-    send_data(data)
+    else:
+        print(response)
+    utime.sleep(1)
+    
 
     
 
